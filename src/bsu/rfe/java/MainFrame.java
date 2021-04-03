@@ -148,3 +148,233 @@ public class MainFrame extends JFrame {
                                 "Список пользователей", JOptionPane.INFORMATION_MESSAGE);
             }
         });
+ /*
+        // Кнопка зарегистрировать пользователя
+        JTextField name = new JTextField(10);
+        JTextField adress = new JTextField(10);
+        final JButton plusUser = new JButton("+");
+        plusUser.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               JLabel inputName = new JLabel("Логин: ");
+                JLabel inputAdress = new JLabel("IP: ");
+
+                Box registr = Box.createVerticalBox();
+                registr.add(Box.createVerticalGlue());
+                Box first = Box.createHorizontalBox();
+                first.add(Box.createHorizontalGlue());
+                first.add(inputName);
+                first.add(Box.createHorizontalStrut(10));
+                first.add(name);
+                first.add(Box.createHorizontalGlue());
+                Box second = Box.createHorizontalBox();
+                second.add(Box.createHorizontalGlue());
+                second.add(inputAdress);
+                second.add(Box.createHorizontalStrut(10));
+                second.add(adress);
+                second.add(Box.createHorizontalGlue());
+                registr.add(first);
+                registr.add(Box.createVerticalStrut(10));
+                registr.add(second);
+                registr.add(Box.createVerticalGlue());
+                JOptionPane.showMessageDialog(MainFrame.this,
+                        registr, "" +
+                                "Регистрация пользователя", JOptionPane.INFORMATION_MESSAGE);
+
+            }
+        });
+        if(!name.getText().isEmpty() && !adress.getText().isEmpty())
+            listoOfUsers = listoOfUsers.plusUser(name.getText(),adress.getText());*/
+
+        // Кнопка поиска пользователя
+        final JButton searchButton = new JButton("Поиск");
+        searchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                JLabel who = new JLabel("Кого ищем?");
+                JTextField searchName = new JTextField(10);
+                Box search = Box.createHorizontalBox();
+                search.add(Box.createHorizontalGlue());
+                search.add(who);
+                search.add(Box.createHorizontalStrut(10));
+                search.add(searchName);
+                search.add(Box.createHorizontalGlue());
+                JOptionPane.showMessageDialog(MainFrame.this,
+                        search, "" +
+                                "Поиск", JOptionPane.QUESTION_MESSAGE);
+                String nameToSearch = searchName.getText();
+                boolean flag = false;
+                for (User user : listoOfUsers.getUsers())
+                {
+                    if(user.getName().equals(nameToSearch)) {
+                        JFrame resultFrame = new JFrame("Пользователь " + user.getName() + " найден");
+                        resultFrame.setSize(400,200);
+                        resultFrame.setLocation((kit.getScreenSize().width - resultFrame.getWidth()) / 2,
+                                (kit.getScreenSize().height - resultFrame.getHeight()) / 2);
+                        flag = true;
+                        JLabel quation = new JLabel("Желаете начать с ним диалог?");
+                        JButton yesButton = new JButton("да");
+
+                        yesButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent actionEvent) {
+                                dialogFrame = new DialogFrame(user, MainFrame.this);
+                                flagPrivate=true;
+                                resultFrame.setVisible(false);
+                            }
+                        });
+
+                        JButton noButton = new JButton("нет");
+                        noButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent actionEvent) {
+                                resultFrame.setVisible(false);
+                            }
+                        });
+                        Box result = Box.createVerticalBox();
+                        result.add(Box.createVerticalGlue());
+                        result.add(quation);
+                        result.add(Box.createVerticalStrut(20));
+                        Box answer = Box.createHorizontalBox();
+                        answer.add(Box.createHorizontalGlue());
+                        answer.add(yesButton);
+                        answer.add(Box.createHorizontalStrut(10));
+                        answer.add(noButton);
+                        answer.add(Box.createHorizontalGlue());
+                        result.add(answer);
+                        result.add(Box.createVerticalGlue());
+                        resultFrame.add(result);
+                        resultFrame.setVisible(true);
+                    }
+                }
+                if(!flag){
+                    JLabel notFound= new JLabel("Такой пользователь не найден");
+                    JOptionPane.showMessageDialog(MainFrame.this,
+                            notFound, "" +
+                                    "Ошибка", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+
+
+        // Компоновка элементов панели "Сообщение"
+        final GroupLayout layout2 = new GroupLayout(messagePanel);
+        messagePanel.setLayout(layout2);
+        layout2.setHorizontalGroup(layout2.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout2.createParallelGroup(Alignment.TRAILING)
+                        .addGroup(layout2
+                                .createSequentialGroup()
+                                .addComponent(labelFrom)
+                                .addGap(SMALL_GAP)
+                                .addComponent(textFieldFrom)
+                                .addGap(LARGE_GAP)
+                                .addComponent(labelTo)
+                                .addGap(SMALL_GAP)
+                                .addComponent(textFieldTo))
+                        .addComponent(scrollPaneOutgoing)
+                        .addGroup(layout2
+                                .createSequentialGroup()
+                                //  .addComponent(plusUser)
+                                .addGap(LARGE_GAP)
+                                .addComponent(listButton)
+                                .addGap(LARGE_GAP)
+                                .addComponent(searchButton)
+                                .addGap(LARGE_GAP)
+                                .addComponent(sendButton)))
+                .addContainerGap());
+
+        layout2.setVerticalGroup(layout2.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout2
+                        .createParallelGroup(Alignment.BASELINE)
+                        .addComponent(labelFrom)
+                        .addComponent(textFieldFrom).addComponent(labelTo).addComponent(textFieldTo))
+                .addGap(MEDIUM_GAP)
+                .addComponent(scrollPaneOutgoing)
+                .addGap(MEDIUM_GAP)
+                .addGroup(layout2
+                        .createParallelGroup(Alignment.BASELINE)
+                        // .addComponent(plusUser)
+                        .addComponent(listButton)
+                        .addComponent(searchButton)
+                        .addComponent(sendButton))
+                .addContainerGap());
+
+        // Компоновка элементов фрейма
+        final GroupLayout layout1 = new GroupLayout(getContentPane());
+        setLayout(layout1);
+        layout1.setHorizontalGroup(layout1.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout1.createParallelGroup()
+                        .addComponent(scrollPaneIncoming)
+                        .addComponent(messagePanel))
+                .addContainerGap());
+
+        layout1.setVerticalGroup(layout1.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(scrollPaneIncoming)
+                .addGap(MEDIUM_GAP)
+                .addComponent(messagePanel)
+                .addContainerGap());
+
+        // Создание и запуск потока-обработчика запросов
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final ServerSocket serverSocket = new ServerSocket(SERVER_PORT);
+                    while (!Thread.interrupted()) {
+                        final Socket socket = serverSocket.accept();
+                        final DataInputStream in = new DataInputStream(socket.getInputStream());
+                        // Читаем имя отправителя
+                        final String senderName = in.readUTF();
+                        // Читаем сообщение
+                        final String message = in.readUTF();
+                        final String Dat = in.readUTF();
+                        // Закрываем соединение
+                        socket.close();
+
+                        // Выделяем IP-адрес
+                        final String address = ((InetSocketAddress) socket
+                                .getRemoteSocketAddress()).getAddress().getHostAddress();
+
+                        if(flagPrivate && !dialogFrame.isVisible())
+                            flagPrivate = false;
+                        boolean flag = false;
+                        for (User user : listoOfUsers.getUsers()) {
+                            if (user.getAddres().equals(textFieldTo.getText()) && !flagPrivate ) {
+                                // Выводим сообщение в текстовую область
+                                textAreaIncoming.append(Dat + "  " + senderName + " -> " + user.getName() + " : " + message + "\n");
+                                flag = true;
+                            }
+                        }
+                        if (!flag && !flagPrivate) {
+                            textAreaIncoming.append(Dat + "  " + senderName + " -> Неизвестный (" + textFieldTo.getText() + ") : " + message + "\n");
+                        }
+
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(MainFrame.this, "Ошибка в работе сервера",
+                            "Ошибка", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }).start();
+
+    }
+
+    public JTextField getLogin() { return login; }
+    public static int getServerPort() { return SERVER_PORT; }
+    public String getDateTime() {
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+        Date date = new Date();
+
+        return dateFormat.format(date);
+
+    }
