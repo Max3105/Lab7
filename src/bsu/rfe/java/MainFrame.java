@@ -378,3 +378,84 @@ public class MainFrame extends JFrame {
         return dateFormat.format(date);
 
     }
+    private void sendMessage() {
+        try {
+            // Получаем необходимые параметры
+            final String senderName = textFieldFrom.getText();
+            final String destinationAddress = textFieldTo.getText();
+            final String message = textAreaOutgoing.getText();
+            final String Datt = date;
+
+            // Убеждаемся, что поля не пустые
+
+            if (senderName.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Введите имя отправителя", "Ошибка",
+                        JOptionPane.ERROR_MESSAGE);
+                textFieldFrom.grabFocus();
+                return;
+            }
+
+            if (destinationAddress.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Введите адрес узла-получателя", "Ошибка",
+                        JOptionPane.ERROR_MESSAGE);
+                textFieldTo.grabFocus();
+                return;
+            }
+            if (message.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Введите текст сообщения", "Ошибка",
+                        JOptionPane.ERROR_MESSAGE);
+                textAreaOutgoing.grabFocus();
+                return;
+            }
+
+            // Создаем сокет для соединения
+            final Socket socket = new Socket(destinationAddress, SERVER_PORT);
+
+            // Открываем поток вывода данных
+            final DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+
+            // Записываем в поток имя
+            out.writeUTF(senderName);
+            // Записываем в поток сообщение
+            out.writeUTF(message);
+            out.writeUTF(Datt);
+            // Закрываем сокет
+            socket.close();
+
+            // Помещаем сообщения в текстовую область вывода
+            //   textAreaIncoming.append(Datt+"  Я -> " + destinationAddress + ": " + message + "\n");
+
+            // Очищаем текстовую область ввода сообщения
+            textAreaOutgoing.setText("");
+
+        }
+
+        catch (UnknownHostException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(MainFrame.this,
+                    "Не удалось отправить сообщение: узел-адресат не найден",
+                    "Ошибка", JOptionPane.ERROR_MESSAGE);
+        }
+
+        catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(MainFrame.this, "Не удалось отправить сообщение",
+                    "Ошибка",JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                final MainFrame frame = new MainFrame();
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setVisible(true);
+            }
+        });
+    }
+
+}
+
+
